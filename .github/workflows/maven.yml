@@ -2,6 +2,11 @@ name: Manual Deploy
 
 on:
   workflow_dispatch:
+    inputs:
+      step-to-trigger:
+        description: 'Step to Trigger'
+        required: true
+        default: 'deploy-dev'
 
 jobs:
   deploy:
