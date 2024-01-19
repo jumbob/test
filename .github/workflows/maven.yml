@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: manual-trigger
         id: manual-trigger
-        uses: actions/manual-trigger@v1
+        uses: manual-trigger@v1
         with:
           RUN_NAME: "build"
   build:
@@ -30,7 +30,7 @@ jobs:
     steps:
       - name: manual-trigger
         id: manual-trigger
-        uses: actions/manual-trigger@v1
+        uses: manual-trigger@v1
         with:
           RUN_NAME: "deploy"
   deploy:
