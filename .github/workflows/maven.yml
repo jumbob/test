@@ -1,11 +1,8 @@
 name: Build and Deploy
 
 on:
-  workflow_run:
-    workflows: ["Build and Deploy"]
-    types:
-      - completed
-
+  workflow_dispatch:
+  
 jobs:
   build:
     runs-on: ubuntu-latest
