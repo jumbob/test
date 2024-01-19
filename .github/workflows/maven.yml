@@ -1,54 +1,34 @@
 name: Build and Deploy
 
 on:
-  workflow_dispatch:
+  workflow_run:
+    workflows: ["Build and Deploy"]
+    types:
+      - completed
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Build
-        run: |
-          # Add your build commands here
-
-  deploy-dev:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
+      - name: Determine Stage to Deploy
+        id: determine_stage
+        run: echo "::set-output name=stage::${{ github.event.workflow_run.conclusion }}"
 
       - name: Deploy to Dev
+        if: steps.determine_stage.outputs.stage == 'success' && github.event.workflow_run.name == 'Build and Deploy - Dev'
         run: |
           # Add your deployment script or commands for the dev environment
 
-  deploy-staging:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-
       - name: Deploy to Staging
+        if: steps.determine_stage.outputs.stage == 'success' && github.event.workflow_run.name == 'Build and Deploy - Staging'
         run: |
           # Add your deployment script or commands for the staging environment
 
-  deploy-production:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-
       - name: Deploy to Production
+        if: steps.determine_stage.outputs.stage == 'success' && github.event.workflow_run.name == 'Build and Deploy - Production'
         run: |
           # Add your deployment script or commands for the production environment
-
-          
