@@ -1,32 +1,54 @@
-name: Manual Deploy
+name: Build and Deploy
 
 on:
-  workflow_dispatch:
-    inputs:
-      step-to-trigger:
-        description: 'Step to Trigger'
-        required: true
-        default: 'deploy-dev'
+  push:
+    branches:
+      - main
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v2
+      - name: Checkout Repository
+        uses: actions/checkout@v2
 
-    - name: Deploy to Dev
-      if: github.event.inputs.environment == 'dev'
-      run: |
-        # Add your deployment script or commands for the dev environment
+      - name: Build
+        run: |
+          # Add your build commands here
 
-    - name: Deploy to Staging
-      if: github.event.inputs.environment == 'staging'
-      run: |
-        # Add your deployment script or commands for the staging environment
+  deploy-dev:
+    needs: build
+    runs-on: ubuntu-latest
 
-    - name: Deploy to Production
-      if: github.event.inputs.environment == 'production'
-      run: |
-        # Add your deployment script or commands for the production environment
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Deploy to Dev
+        run: |
+          # Add your deployment script or commands for the dev environment
+
+  deploy-staging:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Deploy to Staging
+        run: |
+          # Add your deployment script or commands for the staging environment
+
+  deploy-production:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Deploy to Production
+        run: |
+          # Add your deployment script or commands for the production environment
