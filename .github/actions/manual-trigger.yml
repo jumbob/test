@@ -1,4 +1,4 @@
-name: Manual Trigger
+name: manual-trigger
 description: 'Allows you to set up a manual trigger for a workflow so subsequent jobs can run later.'
 author: 'Ben Hamilton'
 branding:
