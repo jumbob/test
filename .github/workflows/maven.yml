@@ -4,64 +4,39 @@ on:
   workflow_dispatch:
   
 jobs:
-  build:
+  manual-trigger-build:
     runs-on: ubuntu-latest
-
+    outputs:
+        CONTINUE_JOBS: ${{ steps.manual-trigger.outputs.CONTINUE_JOBS }}
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-
-      - name: Build
-        run: |
-          # Add your build commands here
-
-  deploy-dev:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-
-      - name: Deploy to Dev
-        run: |
-          # Add your deployment script or commands for the dev environment
-
-  deploy-staging:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-
-      - name: Deploy to Staging
-        run: |
-          # Add your deployment script or commands for the staging environment
-
-  deploy-production:
-    needs: build
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-
-      - name: Deploy to Production
-        run: |
-          # Add your deployment script or commands for the production environment
-  
-  zzz:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: trstringer/manual-approval@v1
+      - name: manual-trigger
+        id: manual-trigger
+        uses: benhamiltonpro/manual-trigger@v1
         with:
-          approvers: jumbob
-          minimum-approvals: 1
-          issue-title: "Deploying v1.3.5 to prod from staging"
-          issue-body: "Please approve or deny the deployment of version v1.3.5."
-          exclude-workflow-initiator-as-approver: false
-          additional-approved-words: ''
-          additional-denied-words: ''
-                
+          RUN_NAME: "build"
+  build:
+    needs: manual-trigger-build
+    if: ${{ needs.manual-trigger-build.outputs.CONTINUE_JOBS == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Runs plan
+        run: echo "It runs plan"
+  
+  manual-trigger-deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    outputs:
+        CONTINUE_JOBS: ${{ steps.manual-trigger.outputs.CONTINUE_JOBS }}
+    steps:
+      - name: manual-trigger
+        id: manual-trigger
+        uses: benhamiltonpro/manual-trigger@v1
+        with:
+          RUN_NAME: "deploy"
+  deploy:
+    needs: manual-trigger-deploy
+    if: ${{ needs.manual-trigger-deploy.outputs.CONTINUE_JOBS == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Runs deploy
+        run: echo "It runs deploy"
