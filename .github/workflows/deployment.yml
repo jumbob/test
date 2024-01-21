@@ -18,6 +18,7 @@ jobs:
       # url: ${{ steps.step_id.outputs.url_output }}
 
     steps:
+      - run: echo ${{ inputs.target-env}}    	
       - run: echo "🎉 target evn ${{ inputs.target-env}}"
       - run: echo "🎉 target evn inputs.target-env"
       - run: echo "🍏 is Dev  ${{ inputs.target-env }} == 'Development'"
