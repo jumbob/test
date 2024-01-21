@@ -52,3 +52,13 @@ jobs:
       - name: Deploy to Production
         run: |
           # Add your deployment script or commands for the production environment
+  ReuseableMatrixJobForDeployment:
+    needs: build
+    strategy:
+      fail-fast: true
+      matrix:
+        target: [Development, Production ]
+    uses: ./.github/workflows/deployment.yml
+    with:
+      target-env: ${{ matrix.target }}
+    secrets: inherit
